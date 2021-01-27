@@ -8,14 +8,17 @@ import {
     Shuffle,
     Repeat,
     RepeatOne,
+    VolumeUp,
     VolumeDown,
+    VolumeMute,
 } from "@material-ui/icons";
-import {Grid, Slider} from "@material-ui/core";
+import {makeStyles, Grid, Slider} from "@material-ui/core";
 import {useDataLayerValue} from "../DataLayer";
+import VolumeSlider from "./VolumeSlider";
 
 
 function Controls({spotify}) {
-    const [{token, item, playing, progress, shuffle_state, repeat_state}, dispatch] = useDataLayerValue();
+    const [{token, item, playing, progress, shuffle_state, repeat_state, volume}, dispatch] = useDataLayerValue();
 
     useEffect(() => {
         spotify.getMyCurrentPlaybackState().then((r) => {
@@ -29,6 +32,11 @@ function Controls({spotify}) {
             dispatch({
                 type: "SET_PROGRESS",
                 progress: r.progress_ms,
+            });
+
+            dispatch({
+                type: "SET_VOLUME",
+                volume: r.device?.volume_percent,
             });
 
             dispatch({
@@ -47,6 +55,12 @@ function Controls({spotify}) {
             });
         });
     }, [spotify, item]);
+
+    const sliderStyles = makeStyles({
+        root: {
+            width: 10,
+        },
+    });
 
     const playPause = () => {
         if (playing) {
@@ -94,11 +108,9 @@ function Controls({spotify}) {
 
     const setShuffle = () => {
         spotify.setShuffle(!shuffle_state)
-        spotify.getMyCurrentPlaybackState().then((r) => {
-            dispatch({
-                type: "SET_SHUFFLE",
-                shuffle_state: !shuffle_state,
-            });
+        dispatch({
+            type: "SET_SHUFFLE",
+            shuffle_state: !shuffle_state,
         });
     };
 
@@ -111,12 +123,18 @@ function Controls({spotify}) {
         } else {
             new_repeat_state = "off";
         }
-        spotify.setRepeat(new_repeat_state)
-        spotify.getMyCurrentPlaybackState().then((r) => {
-            dispatch({
-                type: "SET_REPEAT",
-                repeat_state: new_repeat_state,
-            });
+        spotify.setRepeat(new_repeat_state);
+        dispatch({
+            type: "SET_REPEAT",
+            repeat_state: new_repeat_state,
+        });
+    };
+
+    const setVolume = (event, sliderValue) => {
+        spotify.setVolume(sliderValue);
+        dispatch({
+            type: "SET_VOLUME",
+            volume: sliderValue,
         });
     };
 
@@ -159,28 +177,34 @@ function Controls({spotify}) {
                 {
                     (() => {
                         switch (repeat_state) {
-                            case "track" : return <RepeatOne className="controls__green" onClick={setRepeat}/>;
-                            case "context" : return <Repeat className="controls__green" onClick={setRepeat}/>;
-                            default : return <Repeat className="controls__icon" onClick={setRepeat}/>;
+                            case "track" :
+                                return <RepeatOne className="controls__green" onClick={setRepeat}/>;
+                            case "context" :
+                                return <Repeat className="controls__green" onClick={setRepeat}/>;
+                            default :
+                                return <Repeat className="controls__icon" onClick={setRepeat}/>;
                         }
                     })()
                 }
-                {/*{if (repeat_state === "off") {*/}
-                {/*    return (<Repeat className="controls__icon" onClick={setRepeat}/>)*/}
-                {/*} else if (repeat_state === "track") {(*/}
-                {/*    <Repeat className="controls__green" onClick={setRepeat}/>*/}
-                {/*)} else {*/}
-                {/*    (<RepeatOne className="controls__green" onClick={setRepeat}/>)*/}
-                {/*}}*/}
-
             </div>
             <div className="controls__right">
                 <Grid container spacing={2}>
                     <Grid item>
-                        <VolumeDown/>
+                        {
+                            (() => {
+                                if (volume === 0) {
+                                    return <VolumeMute/>
+                                } else if (volume > 0 && volume < 50) {
+                                    return <VolumeDown/>
+                                } else {
+                                    return <VolumeUp />
+                                }
+                            })()
+                        }
                     </Grid>
                     <Grid item xs>
-                        <Slider/>
+                        <Slider onChange={setVolume}/>
+                        {/*<VolumeSlider onChangeFunc={setVolume}/>*/}
                     </Grid>
                 </Grid>
             </div>

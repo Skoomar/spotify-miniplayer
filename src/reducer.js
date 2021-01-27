@@ -43,6 +43,11 @@ const reducer = (state, action) => {
                 ...state,
                 repeat_state: action.repeat_state,
             };
+        case "SET_VOLUME":
+            return {
+                ...state,
+                volume: action.device?.volume_percent,
+            }
         case "SET_ITEM":
             return {
                 ...state,

@@ -8,11 +8,11 @@ import Controls from "./Controls";
 function Player({ spotify }) {
     return (
         <div className="player">
-            <div className="player__body">
-                <PlaylistBar />
+            {/*<div className="player__body">*/}
+                {/*<PlaylistBar />*/}
                 {/*<Header spotify={spotify}/>*/}
-                <Body spotify={spotify}/>
-            </div>
+                {/*<Body spotify={spotify}/>*/}
+            {/*</div>*/}
             <Controls spotify={spotify}/>
         </div>
     );

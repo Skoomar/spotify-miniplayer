@@ -1,8 +1,8 @@
 .controls {
     position: fixed;
     display: flex;
-    justify-content: space-evenly;
-    bottom: 0;
+    justify-content: space-around;
+    /*bottom: 0;*/
     height: 65px;
     width: 100%;
     background-color: #282828;
@@ -63,3 +63,7 @@
 .controls__right * .MuiSlider-root {
     color: #1ed15e;
 }
+
+/*.volumeSlider {*/
+/*    width: 200px !important;*/
+/*}*/
