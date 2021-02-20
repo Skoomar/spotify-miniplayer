@@ -9,7 +9,7 @@ let mainWindow;
 
 function createWindow() {
     // mainWindow = new BrowserWindow({width: 900, height: 680});
-    mainWindow = new BrowserWindow({width: 600, height: 100});
+    mainWindow = new BrowserWindow({width: 900, height: 135});
     mainWindow.setMenuBarVisibility(false)
     mainWindow.setBackgroundColor("")
 

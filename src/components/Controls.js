@@ -14,13 +14,53 @@ import {
 } from "@material-ui/icons";
 import {makeStyles, Grid, Slider} from "@material-ui/core";
 import {useDataLayerValue} from "../DataLayer";
-import VolumeSlider from "./VolumeSlider";
 
+
+const volumeStyle = makeStyles({
+    root: {
+        width: 100,
+    }
+});
 
 function Controls({spotify}) {
     const [{token, item, playing, progress, shuffle_state, repeat_state, volume}, dispatch] = useDataLayerValue();
 
     useEffect(() => {
+        // const timer = setInterval(() =>
+        // spotify.getMyCurrentPlaybackState().then((r) => {
+        //     // console.log(r);
+        //
+        //     dispatch({
+        //         type: "SET_PLAYING",
+        //         playing: r.is_playing,
+        //     });
+        //
+        //     dispatch({
+        //         type: "SET_PROGRESS",
+        //         progress: r.progress_ms,
+        //     });
+        //
+        //     dispatch({
+        //         type: "SET_VOLUME",
+        //         volume: r.device?.volume_percent,
+        //     });
+        //
+        //     dispatch({
+        //         type: "SET_ITEM",
+        //         item: r.item,
+        //     });
+        //
+        //     dispatch({
+        //         type: "SET_SHUFFLE",
+        //         shuffle_state: r.shuffle_state,
+        //     });
+        //
+        //     dispatch({
+        //         type: "SET_REPEAT",
+        //         repeat_state: r.repeat_state,
+        //     });
+        // }), 800);
+
         spotify.getMyCurrentPlaybackState().then((r) => {
             // console.log(r);
 
@@ -56,11 +96,7 @@ function Controls({spotify}) {
         });
     }, [spotify, item]);
 
-    const sliderStyles = makeStyles({
-        root: {
-            width: 10,
-        },
-    });
+    const classes = volumeStyle();
 
     const playPause = () => {
         if (playing) {
@@ -203,8 +239,9 @@ function Controls({spotify}) {
                         }
                     </Grid>
                     <Grid item xs>
-                        <Slider onChange={setVolume}/>
-                        {/*<VolumeSlider onChangeFunc={setVolume}/>*/}
+                        <div className={classes.root} >
+                            <Slider onChange={setVolume} />
+                        </div>
                     </Grid>
                 </Grid>
             </div>
